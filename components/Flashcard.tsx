@@ -73,7 +73,7 @@ export default function Flashcard({ word, meaning, lesson }: FlashcardProps) {
                         </svg>
                     </button>
 
-                    <h2 className="text-3xl font-bold text-gray-800">{word}</h2>
+                    <h2 className="text-3xl font-bold text-gray-800 text-center">{word}</h2>
                     <p className="mt-4 text-sm text-gray-400">Click card to see meaning</p>
 
                     {lesson && (
