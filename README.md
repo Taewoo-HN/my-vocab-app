@@ -2,4 +2,8 @@
 
 next.js를 사용하여 개발, supabase를 사용하여 데이터베이스를 구축
 
-바이브 코딩을 활용하였습니다. 
+vercel을 통한 배포
+
+google gemini, antigravity 사용
+
+
