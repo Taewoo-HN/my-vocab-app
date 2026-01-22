@@ -1,7 +1,6 @@
 import { supabase } from '@/utils/supabase';
 
 export async function getWordsByLesson(lesson: string) {
-    // 캐싱을 방지하고 매번 최신 데이터를 가져오고 싶다면 옵션 추가 가능
     const { data, error } = await supabase
         .from('wordlist') // 네 테이블 이름
         .select('*')
@@ -13,4 +12,21 @@ export async function getWordsByLesson(lesson: string) {
         return [];
     }
     return data;
+}
+
+export async function getDistinctLessons(): Promise<string[]> {
+    // 1. wordlist 테이블에서 'lesson' 컬럼만 싹 다 가져와
+    const { data, error } = await supabase
+        .from('wordlist')
+        .select('lesson')
+        .order('lesson', { ascending: true }); // 정렬해서 가져오면 더 좋지
+
+    if (error) {
+        console.error('Lesson Fetch Error:', error);
+        return [];
+    }
+
+    const uniqueLessons = Array.from(new Set(data.map((item) => item.lesson)));
+
+    return uniqueLessons;
 }
