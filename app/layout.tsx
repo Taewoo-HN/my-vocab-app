@@ -9,9 +9,7 @@ export const metadata: Metadata = {
     default: "HeNa's Vocabulary Lab", // [기본 제목] 아무것도 안 정했을 때 뜨는 거.
   },
   description: "The smartest vocabulary app in the multiverse.", // 구글 검색 결과에 나오는 설명
-  icons: {
-    icon: "/favicon.ico", // 아이콘 경로 (밑에서 설명함)
-  },
+
 };
 
 export default function RootLayout({
