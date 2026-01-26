@@ -21,7 +21,7 @@ export default function Flashcard({ word, meaning, lesson }: FlashcardProps) {
         // 1. 중요! 버튼 눌렀을 때 카드가 뒤집히지 않게 막는다.
         e.stopPropagation();
 
-        // 2. 브라우저가 지원하는지 확인 (혹시 모를 IE 사용자를 위해... 없겠지만)
+        // 2. 브라우저가 지원하는지 확인 
         if (!('speechSynthesis' in window)) {
             alert("네 브라우저는 말을 못 해, 모티.");
             return;

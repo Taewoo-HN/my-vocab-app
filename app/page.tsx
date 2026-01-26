@@ -12,29 +12,26 @@ type Props = {
 export async function generateMetadata(
   { searchParams }: Props,
 ): Promise<Metadata> {
-  // searchParams 기다리기 (Next.js 15)
   const params = await searchParams;
   const lesson = (params.lesson as string) || "Home";
 
   return {
-    title: lesson, // 결과: "Lesson 1 | Rick's Vocab" (layout.tsx 템플릿 적용됨)
+    title: lesson,
     description: `Study words from ${lesson}`,
   }
 }
 
-// [중요 1] searchParams 타입을 Promise로 감싸야 해!
+
 interface HomeProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 export default async function Home(props: HomeProps) {
-  // [중요 2] props.searchParams를 먼저 await로 기다려서 껍질을 까야 해.
   const searchParams = await props.searchParams;
 
   const lessons = await getDistinctLessons();
   const defaultLesson = lessons.length > 0 ? lessons[0] : 'Lesson 1';
 
-  // [중요 3] 이제 껍질 깐 searchParams에서 lesson을 꺼낸다.
   const selectedLesson = (searchParams.lesson as string) || defaultLesson;
 
   const words = await getWordsByLesson(selectedLesson);
