@@ -1,4 +1,5 @@
-import { supabase } from '@/utils/supabase';
+import { getSupabase } from '@/utils/supabase';
+import localWords from '@/data/words.json';
 
 interface Word {
     id: number;
@@ -7,34 +8,35 @@ interface Word {
     lesson: string;
 }
 
-export async function getWordsByLesson(lesson: string) {
-    const { data, error } = await supabase
-        .from('wordlist') // 네 테이블 이름
-        .select('*')
-        .eq('lesson', lesson)
-        .order('id', { ascending: true })
-        .returns<Word[]>();
-
-    if (error) {
-        console.error('Fetch error:', error);
-        return [];
-    }
-    return data;
+function selectLesson(lessons: string[], requestedLesson?: string) {
+    return requestedLesson && lessons.includes(requestedLesson)
+        ? requestedLesson
+        : lessons[0] || '';
 }
 
-export async function getDistinctLessons(): Promise<string[]> {
-    // 1. wordlist 테이블에서 'lesson' 컬럼만 싹 다 가져와
-    const { data, error } = await supabase
-        .from('wordlist')
-        .select('lesson')
-        .order('lesson', { ascending: true }); // 정렬해서 가져오면 더 좋지
-
-    if (error) {
-        console.error('Lesson Fetch Error:', error);
-        return [];
+export async function getLessonData(requestedLesson?: string) {
+    try {
+        const supabase = getSupabase();
+        if (supabase) {
+            // Bound the whole lookup so an unavailable server cannot stall the page.
+            const signal = AbortSignal.timeout(5000);
+            const { data, error } = await supabase.from('wordlist')
+                .select('lesson').order('lesson', { ascending: true }).abortSignal(signal);
+            if (error) throw error;
+            const lessons = Array.from(new Set((data ?? []).map(item => item.lesson as string)));
+            const selectedLesson = selectLesson(lessons, requestedLesson);
+            const { data: words, error: wordsError } = await supabase.from('wordlist')
+                .select('*').eq('lesson', selectedLesson).order('id', { ascending: true })
+                .abortSignal(signal).returns<Word[]>();
+            if (wordsError) throw wordsError;
+            return { lessons, selectedLesson, words: words ?? [], source: 'supabase' as const };
+        }
+    } catch {
+        console.warn('Vocabulary lookup failed; using local vocabulary.');
     }
-
-    const uniqueLessons = Array.from(new Set(data.map((item) => item.lesson)));
-
-    return uniqueLessons;
+    const lessons = Array.from(new Set(localWords.map(item => item.lesson)));
+    const selectedLesson = selectLesson(lessons, requestedLesson);
+    const words: Word[] = localWords.filter(item => item.lesson === selectedLesson)
+        .sort((a, b) => a.id - b.id);
+    return { lessons, selectedLesson, words, source: 'local' as const };
 }

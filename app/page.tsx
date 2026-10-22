@@ -1,4 +1,4 @@
-import { getWordsByLesson, getDistinctLessons } from '@/app/actions/getWords';
+import { getLessonData } from '@/app/actions/getWords';
 import Flashcard from '@/components/Flashcard';
 import LessonSelector from '@/components/LessonSelector';
 
@@ -29,16 +29,12 @@ interface HomeProps {
 export default async function Home(props: HomeProps) {
   const searchParams = await props.searchParams;
 
-  const lessons = await getDistinctLessons();
-  const defaultLesson = lessons.length > 0 ? lessons[0] : 'Lesson 1';
-
-  const selectedLesson = (searchParams.lesson as string) || defaultLesson;
-
-  const words = await getWordsByLesson(selectedLesson);
+  const requestedLesson = typeof searchParams.lesson === 'string' ? searchParams.lesson : undefined;
+  const { lessons, selectedLesson, words, source } = await getLessonData(requestedLesson);
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
-      <LessonSelector lessons={lessons} />
+      <LessonSelector lessons={lessons} selectedLesson={selectedLesson} />
 
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
@@ -48,6 +44,11 @@ export default async function Home(props: HomeProps) {
           <p className="mt-2 text-gray-500 text-sm sm:text-base">
             Current Lesson: <span className="text-blue-600 font-bold">{selectedLesson}</span>
           </p>
+          {source === 'local' && (
+            <p role="status" className="mt-3 text-sm text-amber-700">
+              YBM 중등·고등 로컬 단어 데이터를 사용 중입니다.
+            </p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">

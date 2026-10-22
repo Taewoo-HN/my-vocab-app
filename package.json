@@ -3,8 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "data:convert": "python3 scripts/convert_words.py",
+    "test": "node --test tests/*.mjs",
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/prepare-vocabulary.mjs && next build",
     "start": "next start",
     "lint": "eslint"
   },

@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Local vocabulary sources and generated JSON
+/data/
+/scripts/convert_words.py
+/tests/vocabulary.mjs
+__pycache__/

@@ -1,24 +1,19 @@
 'use client';
 
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { ChangeEvent } from 'react';
 
 // [수정] 이제 부모로부터 lessons 목록을 선물 받는다.
 interface LessonSelectorProps {
     lessons: string[];
+    selectedLesson: string;
 }
 
-export default function LessonSelector({ lessons }: LessonSelectorProps) {
+export default function LessonSelector({ lessons, selectedLesson }: LessonSelectorProps) {
     const router = useRouter();
-    const searchParams = useSearchParams();
-
-    // URL에 lesson이 없으면, 목록의 첫 번째 놈을 기본값으로 삼아.
-    // 만약 목록도 비어있으면 그냥 빈 문자열.
-    const currentLesson = searchParams.get('lesson') || (lessons.length > 0 ? lessons[0] : '');
-
     const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
         const newLesson = e.target.value;
-        router.push(`/?lesson=${newLesson}`, { scroll: false });
+        router.push(`/?lesson=${encodeURIComponent(newLesson)}`, { scroll: false });
     };
 
     return (
@@ -36,7 +31,7 @@ export default function LessonSelector({ lessons }: LessonSelectorProps) {
                 {lessons.length > 0 ? (
                     <select
                         id="lesson-select"
-                        value={currentLesson}
+                        value={selectedLesson}
                         onChange={handleChange}
                         className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5 shadow-sm cursor-pointer min-w-[150px]"
                     >
