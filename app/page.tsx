@@ -52,7 +52,7 @@ export default async function Home(props: HomeProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {words.length > 0 ? (
-            words.map((item: any) => (
+            words.map((item) => (
               <Flashcard
                 key={item.id}
                 word={item.word}
@@ -64,7 +64,7 @@ export default async function Home(props: HomeProps) {
             <div className="col-span-full py-20 text-center">
               <h3 className="text-lg font-medium text-gray-900">No words found</h3>
               <p className="mt-1 text-gray-500">
-                '{selectedLesson}'은(는) 텅 비어있어.
+                &apos;{selectedLesson}&apos;은(는) 텅 비어있어.
               </p>
             </div>
           )}

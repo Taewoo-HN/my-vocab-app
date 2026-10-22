@@ -24,7 +24,7 @@ export default function LessonSelector({ lessons }: LessonSelectorProps) {
     return (
         <nav className="sticky top-0 z-50 w-full bg-white/80 backdrop-blur-md border-b border-gray-200 py-4 px-6 mb-6 shadow-sm flex justify-between items-center transition-all">
             <span className="text-xl font-bold text-gray-800 hidden sm:block">
-                HeNa's Vocab
+                HeNa&apos;s Vocab
             </span>
 
             <div className="flex items-center w-full sm:w-auto justify-end">

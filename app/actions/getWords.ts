@@ -1,11 +1,19 @@
 import { supabase } from '@/utils/supabase';
 
+interface Word {
+    id: number;
+    word: string;
+    meaning: string;
+    lesson: string;
+}
+
 export async function getWordsByLesson(lesson: string) {
     const { data, error } = await supabase
         .from('wordlist') // 네 테이블 이름
         .select('*')
         .eq('lesson', lesson)
-        .order('id', { ascending: true });
+        .order('id', { ascending: true })
+        .returns<Word[]>();
 
     if (error) {
         console.error('Fetch error:', error);
