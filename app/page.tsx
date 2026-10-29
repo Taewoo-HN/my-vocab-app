@@ -1,6 +1,7 @@
 import { getLessonData } from '@/app/actions/getWords';
 import Flashcard from '@/components/Flashcard';
 import LessonSelector from '@/components/LessonSelector';
+import { randomInt } from 'node:crypto';
 
 import { Metadata } from 'next';
 
@@ -31,6 +32,12 @@ export default async function Home(props: HomeProps) {
 
   const requestedLesson = typeof searchParams.lesson === 'string' ? searchParams.lesson : undefined;
   const { lessons, selectedLesson, words, source } = await getLessonData(requestedLesson);
+  const shuffledWords = [...words];
+
+  for (let i = shuffledWords.length - 1; i > 0; i--) {
+    const j = randomInt(i + 1);
+    [shuffledWords[i], shuffledWords[j]] = [shuffledWords[j], shuffledWords[i]];
+  }
 
   return (
     <main className="min-h-screen bg-gray-50 pb-20">
@@ -53,7 +60,7 @@ export default async function Home(props: HomeProps) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {words.length > 0 ? (
-            words.map((item) => (
+            shuffledWords.map((item) => (
               <Flashcard
                 key={item.id}
                 word={item.word}
